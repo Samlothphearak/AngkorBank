@@ -176,4 +176,4 @@ document.getElementById('delete-all').addEventListener('click', async () => {
             alert('An error occurred while deleting transactions.');
         }
     }
-});
+}); 
