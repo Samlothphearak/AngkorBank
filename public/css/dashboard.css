@@ -1,0 +1,979 @@
+/* General Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Sidebar */
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #fff;
+    height: 100vh;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+/* Sidebar Header */
+.sidebar-header h1 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #fff;
+}
+
+/* User Profile Section */
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #34495e;
+}
+
+.user-picture {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    border: 2px solid #27ae60;
+    object-fit: cover; /* Ensure the image fits well */
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0; 
+}
+
+.user-name:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.user-email {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+}
+
+/* Sidebar Navigation */
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-nav ul li {
+    margin: 20px 0;
+}
+
+.sidebar-nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-nav ul li a:hover {
+    background-color: #34495e;
+}
+
+.sidebar-nav ul li a i {
+    margin-right: 10px;
+}
+
+.sidebar-nav ul li a.active {
+    background-color: #34495e;
+}
+/*=================================== Main Content Styles ===========================*/
+/* Content Sections */
+.content-section {
+    display: none; /* Hide all sections by default */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.content-section.active {
+    display: block; /* Show the active section */
+}
+
+.notifications-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two-column layout */
+    gap: 20px; /* Space between columns */
+}
+
+.notifications-column {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notifications-column h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+}
+
+.notifications-column h3 i {
+    color: #007bff;
+}
+
+.scrollable-list {
+    max-height: 400px; /* Set a fixed height for the scrollable area */
+    overflow-y: auto; /* Add vertical scrollbar */
+    padding-right: 10px; /* Add padding to avoid overlap with scrollbar */
+}
+
+.notification-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.notification-content p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.notification-content small {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+/* Scrollbar Styling */
+.scrollable-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.scrollable-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.scrollable-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/*=================================== Settings Styles ============================*/
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h3 {
+    font-size: 1.25em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 8px 0;
+    font-size: 0.95em;
+    color: #7f8c8d;
+}
+
+input, select, button {
+    margin-bottom: 15px;
+    padding: 12px;
+    font-size: 1em;
+    border: 2px solid #bdc3c7;
+    border-radius: 6px;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+select {
+    width: 100%;
+}
+
+input:focus, select:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 12px 20px;
+    font-size: 1em;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+button:disabled {
+    background-color: #bfc9ca;
+    cursor: not-allowed;
+}
+
+/* Button Styles */
+button[type="submit"] {
+    align-self: flex-start;
+}
+
+/* Section Spacing */
+.settings-section + .settings-section {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-section {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .content-section {
+        padding: 10px;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+/*=================================== Modal Styles ==================================*/
+/* Modal Overlay */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #333;
+}
+
+/* Center the QR Code */
+.qr-code {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto;
+    width: 200px;
+    height: 200px;
+}
+
+/* Payment instructions */
+.khqr-info {
+    text-align: left;
+    padding: 10px;
+}
+
+/* Modal Header */
+.modal-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-header h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.modal-header p {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Support Information */
+.support-info {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.info-item i {
+    font-size: 18px;
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.info-item p {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+}
+
+.info-item a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.info-item a:hover {
+    color: #2980b9;
+}
+
+/* Form Group */
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    resize: vertical; /* Allow vertical resizing */
+    transition: border-color 0.3s ease;
+    min-height: 150px; /* Set a minimum height */
+}
+
+.form-group textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.form-group label {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    font-size: 16px;
+    color: #888;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: #3498db;
+    background-color: #fff;
+    padding: 0 5px;
+}
+
+/* Send Button */
+.btn-send {
+    width: 100%;
+    padding: 15px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-send:hover {
+    background-color: #2980b9;
+}
+
+/* Success Message */
+.success-message {
+    display: none; /* Hidden by default */
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+    color: #2e7d32;
+}
+
+.success-message i {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.success-message p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/*======================================= Profile Modal =========================*/
+.profile-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-picture img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #27ae60;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info p {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+}
+
+.profile-info strong {
+    color: #2c3e50;
+}
+
+.modal-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-edit-profile {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit-profile:hover {
+    background-color: #2980b9;
+}
+/*============================================ KHQR Modal ===========================*/
+.khqr-content {
+    text-align: center;
+}
+
+.qr-code img {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 20px;
+}
+
+.khqr-info {
+    text-align: left;
+    margin-top: 20px;
+}
+
+.khqr-info p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.khqr-info ol {
+    padding-left: 20px;
+}
+
+.khqr-info ol li {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+}
+/*===================================== Main Content =============================*/
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-info h2 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.header-info p {
+    font-size: 18px;
+    color: #555;
+    margin: 5px 0 0;
+}
+
+.balance-amount {
+    font-weight: 600;
+    color: #27ae60;
+}
+
+.header-actions .btn-khqr {
+    background-color: #ec2020;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.header-actions .btn-khqr:hover {
+    background-color: #b92929;
+}
+
+.header-actions .btn-support {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.header-actions .btn-support:hover {
+    background-color: #2980b9;
+}
+
+/* Quick Actions */
+.quick-actions {
+    margin-bottom: 30px;
+}
+
+.quick-actions h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons .btn-transfer {
+    background-color: #9b59b6;
+    color: #fff;
+}
+
+.action-buttons .btn-transfer:hover {
+    background-color: #8e44ad;
+}
+
+.action-buttons .btn-pay {
+    background-color: #e67e22;
+    color: #fff;
+}
+
+.action-buttons .btn-pay:hover {
+    background-color: #d35400;
+}
+
+.action-buttons .btn-loan {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.action-buttons .btn-loan:hover {
+    background-color: #27ae60;
+}
+
+/* Balance Overview */
+/* Balance Overview */
+.balance-overview {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.balance-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 1; /* Ensure both cards take equal width */
+}
+
+.balance-card h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.balance-amount {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* USD Balance Styling */
+.balance-card:first-child .balance-amount {
+    color: #27ae60; /* Green for USD */
+}
+
+/* KHR Balance Styling */
+.balance-card:last-child .balance-amount {
+    color: #e67e22; /* Orange for KHR */
+}
+/* Account Details */
+.account-details {
+    margin-bottom: 30px;
+}
+
+.account-details h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.detail-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.detail-label {
+    font-size: 14px;
+    color: #888;
+}
+
+.detail-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Transactions */
+.transactions {
+    margin-bottom: 30px;
+}
+
+.transactions h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.transaction-list {
+    list-style: none;
+    padding: 0;
+    max-height: 400px; /* Set a maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Custom scrollbar styles */
+.transaction-list::-webkit-scrollbar {
+    width: 1px; /* Width of the scrollbar */
+}
+
+.transaction-list::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 4px;
+}
+
+.transaction-list::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar thumb */
+    border-radius: 4px;
+}
+
+.transaction-list::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+}
+
+.transaction-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transaction-type {
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.transaction-type.deposit {
+    color: #27ae60;
+}
+
+.transaction-type.withdraw {
+    color: #e74c3c;
+}
+
+.transaction-date {
+    color: #888;
+    font-size: 14px;
+}
+
+.transaction-amount {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Transaction ID */
+.transaction-id {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Transaction Description */
+.transaction-description {
+    font-size: 14px;
+    color: #333;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Transaction Status */
+.transaction-status {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Status Colors */
+.transaction-status.pending {
+    color: #f39c12; /* Orange for pending */
+}
+
+.transaction-status.completed {
+    color: #27ae60; /* Green for completed */
+}
+
+.transaction-status.failed {
+    color: #e74c3c; /* Red for failed */
+}
+
+/* Filter Section */
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section label {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.filter-section select {
+    padding: 5px;
+    margin-right: 15px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.filter-section button {
+    padding: 5px 10px;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-section button:hover {
+    background-color: #34495e;
+}
+
+/* Delete All Button */
+.delete-all-button {
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.delete-all-button:hover {
+    background-color: #c0392b;
+}
+
+
+/* Insights Section */
+.financial-insights {
+    margin-bottom: 40px;
+}
+
+.insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.insight-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.insight-card h4 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.insight-card p {
+    font-size: 24px;
+    font-weight: 600;
+    color: #27ae60;
+    margin-bottom: 5px;
+}
+
+.insight-card small {
+    font-size: 14px;
+    color: #888;
+}
+
+/* Notifications */
+.notifications {
+    margin-bottom: 30px;
+}
+
+.notifications h3 {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.notification-list {
+    list-style: none;
+    padding: 0;
+}
+
+.notification-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.notification-item i {
+    font-size: 18px;
+    color: #3498db;
+    margin-right: 15px;
+}
+
+.notification-content p {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+}
+
+.notification-content small {
+    font-size: 14px;
+    color: #888;
+}
