@@ -9,7 +9,7 @@ const activityLogSchema = new mongoose.Schema(
     },
     eventType: {
       type: String,
-      enum: ["login", "logout", "password_change", "profile_update"], // Event types
+      enum: ["login", "logout", "password_change", "profile_update", "failed_login"], // Add more event types as needed
       required: true,
     },
     location: {
@@ -28,7 +28,7 @@ const activityLogSchema = new mongoose.Schema(
       default: Date.now, // Automatically set timestamp
     },
   },
-  { timestamps: true }
+  { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 
 module.exports = mongoose.model("ActivityLog", activityLogSchema);

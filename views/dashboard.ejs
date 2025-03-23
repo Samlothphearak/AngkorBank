@@ -88,7 +88,9 @@
                         <h2>Welcome, <%= user.firstName %>
                                 <%= user.lastName %>
                         </h2>
-                        <p>Your Current Balance: <span class="balance-amount">$<%= user.balance.toLocaleString() %></span></p>                    </div>
+                        <p>Your Current Balance: <span class="balance-amount">$<%= user.balance.toLocaleString() %>
+                            </span></p>
+                    </div>
                     <!-- KHQR Button -->
                     <div class="header-actions">
                         <button class="btn btn-khqr" id="openKHQR"><i class="fas fa-qrcode"></i> KHQR</button>
@@ -260,33 +262,72 @@
                         <div class="detail-item">
                             <span class="detail-label">Last Login</span>
                             <span class="detail-value">
-                                <%= new Date(user.lastLogin).toLocaleString() %>
+
                             </span>
                         </div>
                     </div>
                 </section>
             </section>
-
             <!-- Accounts Section -->
             <section id="accounts" class="content-section">
-                <h2>Accounts</h2>
+                <h2>My Accounts</h2>
+
+                <!-- Add Account Button -->
+                <div class="add-account">
+                    <button onclick="addAccount()">+ Add Another Account</button>
+                </div>
+
                 <!-- Balance Overview -->
                 <section class="balance-overview">
-                    <!-- USD Balance Card -->
+                    <!-- Dollar Account -->
                     <div class="balance-card">
-                        <h3>Available Balance (USD)</h3>
+                        <h3>Dollar Account (USD)</h3>
                         <p class="balance-amount">$<%= user.balance.toLocaleString() %>
                         </p>
+                        <p class="account-number">Account No: <%= user.Dollar_accountNumber %>
+                        </p>
+                        <div class="buttons">
+                            <button class="btn-deposit">Deposit</button>
+                            <button class="btn-withdraw">Withdraw</button>
+                        </div>
                     </div>
-                    <!-- KHR Balance Card -->
+
+                    <!-- Riel Account -->
                     <div class="balance-card">
-                        <h3>Available Balance (KHR)</h3>
+                        <h3>Riel Account (KHR)</h3>
                         <p class="balance-amount">៛<%= (user.balance * 4000).toLocaleString() %>
                         </p>
+                        <p class="account-number">Account No: <%= user.Khmer_accountNumber %>
+                        </p>
+                        <div class="buttons">
+                            <button class="btn-deposit">Deposit</button>
+                            <button class="btn-withdraw">Withdraw</button>
+                        </div>
                     </div>
                 </section>
-            </section>
 
+                <!-- Recent Transactions -->
+                <section class="transactions">
+                    <h3>Recent Transactions</h3>
+                    <ul>
+                        <% transactions.slice(0, 5).forEach(transaction=> { %>
+                            <li>
+                                <span class="transaction-date">
+                                    <%= transaction.date %>
+                                </span>
+                                <span class="transaction-type">
+                                    <%= transaction.type %>
+                                </span>
+                                <span
+                                    class="transaction-amount <%= transaction.type === 'deposit' ? 'deposit' : 'withdraw' %>">
+                                    <%= transaction.currency %>
+                                        <%= transaction.amount.toLocaleString() %>
+                                </span>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </section>
+            </section>
             <!-- Transactions Section -->
             <section id="transactions" class="content-section">
                 <h2>Transactions</h2>
@@ -352,9 +393,6 @@
                     </ul>
                 </section>
             </section>
-            </section>
-            </section>
-
             <!-- Insights Section -->
             <section id="insights" class="content-section">
                 <h2>Insights</h2>
@@ -446,7 +484,6 @@
                             </ul>
                         </div>
                     </section>
-
                     <!-- News Column -->
                     <section class="notifications-column">
                         <h3><i class="fas fa-newspaper"></i> Bank - News</h3>
@@ -487,9 +524,6 @@
                         <button type="submit">Edit</button>
                     </form>
                 </div>
-
-
-
                 <!-- Security Settings -->
                 <div class="settings-section">
                     <h3>Security Settings</h3>
@@ -502,6 +536,22 @@
 
                         <button type="submit">Save Security Settings</button>
                     </form>
+                </div>
+                <div class="settings-section">
+                    <h3>Recent Activity</h3>
+                    <ul>
+                        <% activityLogs.forEach(log=> { %>
+                            <li>
+                                <strong>
+                                    <%= log.eventType %>
+                                </strong> -
+                                <%= new Date(log.timestamp).toLocaleString() %> - <!-- Format the timestamp -->
+                                    <%= log.location %> - <!-- Display the location -->
+                                        <%= log.ipAddress %> <!-- Display the IP Address -->
+                            </li>
+                            <% }); %>
+                    </ul>
+
                 </div>
                 <!-- Privacy Settings -->
                 <div class="settings-section">
@@ -519,6 +569,31 @@
             </section>
 
             <!-- All Modal are here -->
+            <!-- Deposit Modal -->
+            <div id="depositModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Deposit Funds</h2>
+                    <form action="/deposit" method="POST">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="depositAmount" name="amount" required>
+                        <button type="submit">Deposit</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Withdraw Modal -->
+            <div id="withdrawModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Withdraw Funds</h2>
+                    <form action="/withdraw" method="POST">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="withdrawAmount" name="amount" required>
+                        <button type="submit">Withdraw</button>
+                    </form>
+                </div>
+            </div>
             <!-- Quick Actions Modal -->
             <div id="quickActionsModal" class="modal">
                 <div class="modal-content">

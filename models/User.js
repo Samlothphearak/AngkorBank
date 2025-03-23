@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -37,7 +36,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    balance: {
+    // Separate balances for each account type
+    Dollar_balance: {
+      type: Number,
+      default: 0.00,
+    },
+    Khmer_balance: {
       type: Number,
       default: 0.00,
     },
@@ -100,28 +104,25 @@ const userSchema = new mongoose.Schema(
     },
     Dollar_accountNumber: {
       type: String,
-      unique: true, // Make sure the number is unique
+      unique: true,
     },
     Khmer_accountNumber: {
       type: String,
-      unique: true, // Make sure the number is unique
+      unique: true,
     },
   },
-  { timestamps: true } // Automatically adds createdAt and updatedAt fields
+  { timestamps: true }
 );
 
 // Ensure unique account numbers
 userSchema.pre("save", async function (next) {
-  if (!this.isNew) return next(); // Only generate new account numbers for new users
+  if (!this.isNew) return next();
 
   let isUnique = false;
   while (!isUnique) {
-    // Generate a unique USD account number with format "USD" + 9-digit random number
     this.Dollar_accountNumber = `USD${Math.floor(100000000 + Math.random() * 900000000)}`;
-    // Generate a unique KHR account number with format "KHR" + 9-digit random number
     this.Khmer_accountNumber = `KHR${Math.floor(100000000 + Math.random() * 900000000)}`;
 
-    // Check if either account number already exists
     const existingUser = await mongoose.model("User").findOne({
       $or: [
         { Dollar_accountNumber: this.Dollar_accountNumber },

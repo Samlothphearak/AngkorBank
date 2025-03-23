@@ -54,7 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
         support: document.getElementById("supportModal"),
         transfer: document.getElementById("transferModal"),
         payBills: document.getElementById("payBillsModal"),
-        loan: document.getElementById("loanModal")
+        loan: document.getElementById("loanModal"),
+        deposit: document.getElementById("depositModal"),
+        withdraw: document.getElementById("withdrawModal")
     };
 
     // Get button elements
@@ -63,13 +65,15 @@ document.addEventListener("DOMContentLoaded", function () {
         openSupport: document.getElementById("openSupport"),
         transfer: document.querySelector(".btn-transfer"),
         payBills: document.querySelector(".btn-pay"),
-        loan: document.querySelector(".btn-loan")
+        loan: document.querySelector(".btn-loan"),
+        openDeposit: document.querySelector(".btn-deposit"),  // Button to open deposit modal
+        openWithdraw: document.querySelector(".btn-withdraw") // Button to open withdraw modal
     };
 
     // Get close buttons
     const closeBtns = document.querySelectorAll(".close-btn");
 
-    // Get QR container
+    // Get QR container (for KHQR)
     const qrContainer = document.getElementById("khqr-code");
 
     // Function to open a modal
@@ -77,11 +81,9 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.style.display = "flex";
     }
 
-    // Function to close all modals
-    function closeModal() {
-        Object.values(modals).forEach(modal => {
-            modal.style.display = "none";
-        });
+    // Function to close a modal
+    function closeModal(modal) {
+        modal.style.display = "none";
     }
 
     // Function to generate KHQR code
@@ -106,18 +108,30 @@ document.addEventListener("DOMContentLoaded", function () {
     buttons.payBills?.addEventListener("click", () => openModal(modals.payBills));
     buttons.loan?.addEventListener("click", () => openModal(modals.loan));
 
-    // Event Listeners for closing modals
+    // Event listeners for opening Deposit and Withdraw modals
+    buttons.openDeposit?.addEventListener("click", () => openModal(modals.deposit));
+    buttons.openWithdraw?.addEventListener("click", () => openModal(modals.withdraw));
+
+    // Event Listeners for closing modals (by clicking the close button)
     closeBtns.forEach((btn) => {
-        btn.addEventListener("click", closeModal);
+        btn.addEventListener("click", function () {
+            // Find the parent modal of the clicked close button
+            const modal = btn.closest(".modal");
+            closeModal(modal);
+        });
     });
 
-    // Close modals when clicking outside content
+    // Close modals when clicking outside the modal content
     window.addEventListener("click", (event) => {
-        if (Object.values(modals).includes(event.target)) {
-            closeModal();
-        }
+        // Close modal if the user clicks outside the modal content (but inside the modal container)
+        Object.values(modals).forEach(modal => {
+            if (event.target === modal) {
+                closeModal(modal);
+            }
+        });
     });
 });
+
 
 
 // Handle Support Form Submission

@@ -690,7 +690,6 @@ button[type="submit"] {
 }
 
 /* Balance Overview */
-/* Balance Overview */
 .balance-overview {
     display: flex;
     gap: 20px;
@@ -752,6 +751,129 @@ button[type="submit"] {
     font-weight: bold;
     color: #000;
 }
+
+/* General Section Styling */
+#accounts {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+h2, h3 {
+    text-align: center;
+    color: #333;
+}
+
+/* Balance Overview - Modern Card Style */
+.balance-overview {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.balance-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.balance-card:hover {
+    transform: scale(1.05);
+}
+
+.balance-card h3 {
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+.balance-amount {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.account-number, .maturity-date {
+    font-size: 14px;
+    color: #888;
+}
+
+/* Buttons */
+.buttons {
+    margin-top: 10px;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button:first-child {
+    background: #3498db;
+    color: white;
+}
+
+button:last-child {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Currency Conversion */
+.currency-conversion {
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.currency-conversion h3 {
+    margin-bottom: 5px;
+}
+
+/* Transactions */
+.transactions ul {
+    list-style: none;
+    padding: 0;
+}
+
+.transactions li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.transaction-date {
+    color: #666;
+}
+
+.transaction-amount {
+    font-weight: bold;
+}
+
+.deposit {
+    color: #2ecc71;
+}
+
+.withdraw {
+    color: #e74c3c;
+}
+
 
 /* USD Balance Styling */
 .balance-card:first-child .balance-amount {

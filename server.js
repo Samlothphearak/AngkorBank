@@ -15,7 +15,7 @@ const path = require("path");
 const fs = require("fs");
 const app = express();
 const User = require("./models/User");
-const Transaction = require("./models/Transaction");
+const { generateTransactionId, Transaction } = require('./models/Transaction'); // Adjust path as needed
 const Insight = require("./models/Insight");
 const calculateInsights = require("./utils/insightCalculations");
 const Notification = require("./models/Notification");
@@ -123,77 +123,87 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 //========================================Registration Route ===============================
-app.post(
-  "/register",
-  [
-    check("email").isEmail().withMessage("Please enter a valid email"),
-    check("password")
-      .isLength({ min: 8 })
-      .withMessage("Password must be at least 8 characters long"),
-    check("telephone")
-      .matches(/^0[1-9]\d{7,8}$/)
-      .withMessage("Please enter a valid Cambodian phone number."),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.render("register", { error: errors.array()[0].msg });
+// Registration Route
+app.post("/register", [
+  check("email").isEmail().withMessage("Please enter a valid email."),
+  check("password")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long."),
+  check("telephone")
+    .matches(/^0[1-9]\d{7,8}$/)
+    .withMessage("Please enter a valid Cambodian phone number."),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render("register", { error: errors.array()[0].msg });
+  }
+
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirm_password,
+    nationalId,
+    city,
+    telephone,
+    address,
+    dob,
+    accountType,
+  } = req.body;
+
+  // Validate password match
+  if (password !== confirm_password) {
+    return res.render("register", { error: "Passwords do not match" });
+  }
+
+  try {
+    // Check for existing user by email
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.render("register", { error: "Email already exists" });
     }
 
-    const {
+    // Hash the password before saving it to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the new user
+    const newUser = new User({
       firstName,
       lastName,
       email,
-      password,
-      confirm_password,
+      password: hashedPassword,
       nationalId,
       city,
       telephone,
       address,
       dob,
       accountType,
-    } = req.body;
+    });
 
-    // Validate password match
-    if (password !== confirm_password) {
-      return res.render("register", { error: "Passwords do not match" });
-    }
+    // Save user to the database
+    await newUser.save();
 
-    // Check for existing user
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.render("register", { error: "Email already exists" });
-    }
+    // Create a registration success notification
+    const registrationNotification = new Notification({
+      message: "Your account has been successfully registered!",
+      user: newUser._id,
+      type: "bank", // Notification type is bank-related
+      priority: "high", // High priority for registration
+    });
 
-    try {
-      // Hash the password before saving it to the database
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = new User({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        nationalId,
-        city,
-        telephone,
-        address,
-        dob,
-        accountType,
-      });
+    await registrationNotification.save(); // Save the notification
 
-      // Save user to the database
-      await newUser.save();
-      res.redirect("/login");
-    } catch (error) {
-      console.error("Error during registration:", error);
-      res.render("register", {
-        error: "Registration failed. Please try again.",
-      });
-    }
+    res.redirect("/login");
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.render("register", {
+      error: "Registration failed. Please try again.",
+    });
   }
-);
+});
 
-// Login route
+// Login Route
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -211,80 +221,122 @@ app.post("/login", async (req, res) => {
 
   // Issue JWT token and send it in a cookie (using JWT for authentication)
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: "1h", // Expiry time for the token
   });
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   }); // Use secure: true in production
 
+  // Create a login success notification
+  const loginNotification = new Notification({
+    message: "You have successfully logged into your account.",
+    user: user._id,
+    type: "bank", // Bank-related notification
+    priority: "medium", // Medium priority for login
+  });
+
+  await loginNotification.save(); // Save the notification
+
   // Redirect to the dashboard or home page after successful login
   res.redirect("/dashboard");
 });
 
-// Dashboard Route
+
+//============================= dashboard ==================================
 app.get("/dashboard", async (req, res) => {
   const token = req.cookies.token;
   if (!token) return res.redirect("/login"); // Ensure user is logged in
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id); // Fetch user info
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+    const user = await User.findById(decoded.id).lean(); // Fetch user data efficiently
     if (!user) {
-      return res.clearCookie("token").redirect("/login"); // Redirect if no user found
+      return res.clearCookie("token").redirect("/login"); // Redirect if user not found
     }
 
-    const transactions = await Transaction.find({ userId: user._id }); // Fetch transactions for the user
-    const insights = await calculateInsights(user._id, transactions); // Calculate or fetch insights data
+    // Ensure balances exist to prevent EJS errors
+    user.checkingBalance = user.checkingBalance || 0;
+    user.savingsBalance = user.savingsBalance || 0;
+    user.fixedDepositBalance = user.fixedDepositBalance || 0;
 
-    // Fetch notifications for the user
-    const notifications = await Notification.find({ user: user._id }).sort({
-      timestamp: -1,
-    });
+    // Fetch activity logs for the user
+    const activityLogs = await ActivityLog.find({ userId: user._id })
+      .sort({ timestamp: -1 })
+      .lean();
+
+    // Fetch user transactions (latest first)
+    const transactions = await Transaction.find({ userId: user._id })
+      .sort({ date: -1 })
+      .lean();
+
+    // Fetch insights safely
+    let insights = {};
+    try {
+      insights = await calculateInsights(user._id, transactions) || {};
+    } catch (err) {
+      console.error("Error calculating insights:", err);
+    }
+
+    // Fetch notifications
+    const notifications = await Notification.find({ user: user._id })
+      .sort({ timestamp: -1 })
+      .lean();
 
     // Fetch news notifications (if any)
-    const newsNotifications = await Notification.find({ type: "news" }).sort({
-      timestamp: -1,
-    });
+    const newsNotifications = await Notification.find({ type: "news" })
+      .sort({ timestamp: -1 })
+      .lean();
 
-    // Render dashboard with user, transactions, insights, notifications, and QR code data
+    // Render dashboard with all required data
     res.render("dashboard", {
       user,
-      transactions,
+      activityLogs: activityLogs || [],
+      transactions: transactions || [],
       insights,
-      notifications,
-      newsNotifications,
+      notifications: notifications || [],
+      newsNotifications: newsNotifications || [],
       qrCodePath: `/qrcodes/qrcode-${user._id}.png`, // Path to user's QR code
     });
   } catch (error) {
-    console.error(error);
-    res.clearCookie("token");
-    res.redirect("/login"); // If token is invalid or expired, redirect to login
+    console.error("Dashboard Error:", error);
+    res.clearCookie("token"); // Clear cookie if token is invalid
+    res.redirect("/login"); // Redirect to login
   }
 });
+
+
 
 // Deposit Route
 app.post("/deposit", async (req, res) => {
   const { amount } = req.body;
   const token = req.cookies.token;
-  if (!token) return res.redirect("/login"); // Ensure user is logged in
+
+  if (!token) return res.redirect("/login");
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    // Update balance and save transaction
+    // Update user balance
     user.balance += parseFloat(amount);
     await user.save();
 
-    // Create a new transaction
+    // Generate unique transaction ID
+    const transactionId = await generateTransactionId(); // Now calling the imported function
+
+    // Create a new deposit transaction
     const newTransaction = new Transaction({
       userId: user._id,
       type: "deposit",
-      amount,
+      amount: parseFloat(amount),
+      transactionId,
+      status: "completed",
+      description: "Deposit from user account",
     });
 
     await newTransaction.save(); // Save transaction
+
     res.redirect("/dashboard");
   } catch (error) {
     console.error(error);
@@ -296,7 +348,8 @@ app.post("/deposit", async (req, res) => {
 app.post("/withdraw", async (req, res) => {
   const { amount } = req.body;
   const token = req.cookies.token;
-  if (!token) return res.redirect("/login"); // Ensure user is logged in
+
+  if (!token) return res.redirect("/login");
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -306,14 +359,20 @@ app.post("/withdraw", async (req, res) => {
       user.balance -= parseFloat(amount);
       await user.save();
 
-      // Create a new transaction for withdrawal
+      // Generate unique transaction ID
+      const transactionId = await generateTransactionId(); // Calling the imported function
+
       const newTransaction = new Transaction({
         userId: user._id,
         type: "withdraw",
-        amount,
+        amount: parseFloat(amount),
+        transactionId,
+        status: "completed",
+        description: "Withdrawal from user account",
       });
 
       await newTransaction.save(); // Save transaction
+
       res.redirect("/dashboard");
     } else {
       res.send("Insufficient balance");
@@ -323,6 +382,8 @@ app.post("/withdraw", async (req, res) => {
     res.status(500).send("Error processing withdrawal");
   }
 });
+
+
 
 // Delete All Transactions
 app.delete("/transactions/delete-all", async (req, res) => {
