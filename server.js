@@ -308,8 +308,9 @@ app.get("/dashboard", async (req, res) => {
 
 
 // Deposit Route
+// Deposit Route
 app.post("/deposit", async (req, res) => {
-  const { amount } = req.body;
+  const { amount, accountType } = req.body; // Extract accountType from the form
   const token = req.cookies.token;
 
   if (!token) return res.redirect("/login");
@@ -318,26 +319,43 @@ app.post("/deposit", async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    // Update user balance
-    user.balance += parseFloat(amount);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    // Ensure amount is a number
+    const depositAmount = parseFloat(amount);
+    
+    if (accountType === "USD") {
+      // Update USD balance
+      user.Dollar_balance += depositAmount;
+    } else if (accountType === "KHR") {
+      // Update KHR balance
+      user.Khmer_balance += depositAmount;
+    } else {
+      return res.status(400).send("Invalid account type selected");
+    }
+
+    // Save the updated user data
     await user.save();
 
     // Generate unique transaction ID
-    const transactionId = await generateTransactionId(); // Now calling the imported function
+    const transactionId = await generateTransactionId();
 
     // Create a new deposit transaction
     const newTransaction = new Transaction({
       userId: user._id,
       type: "deposit",
-      amount: parseFloat(amount),
+      amount: depositAmount,
       transactionId,
       status: "completed",
-      description: "Deposit from user account",
+      description: `Deposit to ${accountType} account`,
     });
 
-    await newTransaction.save(); // Save transaction
+    // Save the transaction
+    await newTransaction.save();
 
-    res.redirect("/dashboard");
+    res.redirect("/dashboard"); // Redirect to dashboard after success
   } catch (error) {
     console.error(error);
     res.status(500).send("Error processing deposit");
@@ -346,7 +364,7 @@ app.post("/deposit", async (req, res) => {
 
 // Withdraw Route
 app.post("/withdraw", async (req, res) => {
-  const { amount } = req.body;
+  const { amount, accountType } = req.body; // Extract accountType from the form
   const token = req.cookies.token;
 
   if (!token) return res.redirect("/login");
@@ -355,35 +373,58 @@ app.post("/withdraw", async (req, res) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
-    if (user.balance >= parseFloat(amount)) {
-      user.balance -= parseFloat(amount);
-      await user.save();
-
-      // Generate unique transaction ID
-      const transactionId = await generateTransactionId(); // Calling the imported function
-
-      const newTransaction = new Transaction({
-        userId: user._id,
-        type: "withdraw",
-        amount: parseFloat(amount),
-        transactionId,
-        status: "completed",
-        description: "Withdrawal from user account",
-      });
-
-      await newTransaction.save(); // Save transaction
-
-      res.redirect("/dashboard");
-    } else {
-      res.send("Insufficient balance");
+    if (!user) {
+      return res.status(404).send("User not found");
     }
+
+    // Ensure amount is a number
+    const withdrawAmount = parseFloat(amount);
+    
+    if (accountType === "USD") {
+      // Check if user has enough balance in USD
+      if (user.Dollar_balance >= withdrawAmount) {
+        // Subtract the withdraw amount from the Dollar_balance
+        user.Dollar_balance -= withdrawAmount;
+      } else {
+        return res.send("Insufficient balance in USD account");
+      }
+    } else if (accountType === "KHR") {
+      // Check if user has enough balance in KHR
+      if (user.Khmer_balance >= withdrawAmount) {
+        // Subtract the withdraw amount from the Khmer_balance
+        user.Khmer_balance -= withdrawAmount;
+      } else {
+        return res.send("Insufficient balance in KHR account");
+      }
+    } else {
+      return res.status(400).send("Invalid account type selected");
+    }
+
+    // Save the updated user data
+    await user.save();
+
+    // Generate unique transaction ID
+    const transactionId = await generateTransactionId();
+
+    // Create a new withdrawal transaction
+    const newTransaction = new Transaction({
+      userId: user._id,
+      type: "withdraw",
+      amount: withdrawAmount,
+      transactionId,
+      status: "completed",
+      description: `Withdrawal from ${accountType} account`,
+    });
+
+    // Save the transaction
+    await newTransaction.save();
+
+    res.redirect("/dashboard"); // Redirect to dashboard after success
   } catch (error) {
     console.error(error);
     res.status(500).send("Error processing withdrawal");
   }
 });
-
-
 
 // Delete All Transactions
 app.delete("/transactions/delete-all", async (req, res) => {
